@@ -7,20 +7,20 @@ These vignettes give examples for using the [metacells](https://github.com/tanay
 
 You can directly view the vignettes here:
 
-* [One Pass Process](https://github.com/tanaylab/metacells-vignettes)
-* [Iterative Process](https://github.com/tanaylab/metacells-vignettes)
-* [Projection Process](https://github.com/tanaylab/metacells-vignettes)
+* [One Pass Process](https://tanaylab.github.io/metacells-vignettes/htmls/one-pass.html)
+* [Iterative Process](https://tanaylab.github.io/metacells-vignettes/htmls/iterative.html)
+* [Projection Process](https://tanaylab.github.io/metacells-vignettes/htmls/projection.html)
 
 ## Re-run the vignettes
 
 If you want to run the vignettes yourself, `git clone` this repository. Then, create a `blobs` sub-directory, download
-the (zipped) [hca\_bm.full.h5ad](https://github.com/tanaylab/metacells-vignettes) and
-[blood\_aging.full.h5ad](https://github.com/tanaylab/metacells-vignettes) files into it, and unzip them. This will take
-~5GB of disk space (unzipped).
+the (zipped) [hca\_bm.full.h5ad](https://TODOX/hca_bm.full.h5ad.zip) and
+[blood\_aging.full.h5ad](https://TODOX/blood_aging.full.h5ad.zip) files into it, and unzip them. This will take ~5GB of
+disk space (unzipped).
 
 Assuming you have the Python [metacells](https://github.com/tanaylab/metacells) package and the R
-(https://github.com/tanaylab/MCView) package installed, you should be able to run the Jupyter notebooks contained
-here yourself.
+[MCView](https://github.com/tanaylab/MCView) package installed, you should be able to run the Jupyter notebooks
+contained here yourself.
 
 Alternatively, you could copy these notebooks and adapt them to use your own data, using them as a guide.
 
