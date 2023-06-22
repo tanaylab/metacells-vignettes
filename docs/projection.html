@@ -18197,7 +18197,7 @@ Execution halted
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We'll not go over all the <code>MCView</code> features for dealing with projection (a topic worthy of a vignette of its own). We'll note, however, that there's a new <code>Projection QC</code> tab which shows quality controls of the projection. We'll take a look at "Projected correlation per metacell". This shows us the distribution (across metacells) of the correlation between the new data set metacell and the projected image of the metacell on the atlas (that is, the weighted average of some atlas metacells). This is computed only for the genes the projection algorithm thinks it actually managed to project "well", so we expect it to be high. In fact, we expect it to be <strong>very</strong> high. Specifically, when we see a median of ~0.87 in the QC tab, we worry. That's an R^2 of ~0.75, that is, ~25% of the variance of the genes in the new data set is not captured by the projection on the atlas (we zoomed to the range 0.8 - 1.0):</p>
-<p><img src="../images/preliminary.correlation.svg" alt="Uncorrected Correlation"></p>
+<p><img src="images/preliminary.correlation.svg" alt="Uncorrected Correlation"></p>
 <p>So why this poor result? Well, it turns out, the new data set we are projecting was collected using 10X v3, while the atlas was computed using 10X v2. In general, any scRNA-seq technology has different sensitivity for different mRNA molecules, and this is equivalent to applying some technology-dependent multiplicative factor to the number of UMIs of each gene. For this reason, our projection mechanism will optionally try to estimate a multiplicative correction factor for each (relevant) gene, such that this will (ideally) cancel out the difference between the technologies.</p>
 <p>This is not the default as applying it to data which is not expected to need such corrections may overfit the new data on the atlas. This overfitting is mild; for example, nucleus-only scRNA-seq data gives very non-linear biases for some mRNA molecules when compared to whole-cell data, so using this correction will <em>not</em> force-fit the data sets together (that is, you will still get lower R^2 and a lot of not-<code>similar</code> metacells). Still, overfitting is overfitting, and should never be the default. Use with care, YMMV, etc.</p>
 <p>At any rate, let's re-run the projection with this correction. We'll start by renaming the data to distinguish it from the previous run. Note we do not need to re-compute the metacells:</p>
@@ -19981,7 +19981,7 @@ Execution halted
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>If we look at the projected QC tab now, we see much better results (again we zoomed to the range 0.8 - 1.0):</p>
-<p><img src="../images/corrected.correlation.svg" alt="Corrected Correlation"></p>
+<p><img src="images/corrected.correlation.svg" alt="Corrected Correlation"></p>
 <p>Now the median is ~0.95, which is an R^2 of ~0.90, that is, only ~10% of the variance of the (genes we <em>did</em> manage to fit) is not explained by the projection. Much better.</p>
 
 </div>
