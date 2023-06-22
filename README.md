@@ -1,28 +1,48 @@
 # Metacells Vignettes
 
 These vignettes give examples for using the [metacells](https://github.com/tanaylab/metacells), specifically version
-0.9.
+0.9. They are not meant as a comprehensive documentation of all the features, and the data contained in them should
+**not** be used for any serious analysis. They are just examples of the processes that one typically uses when using the
+metacells package for analysis of scRNA-seq data.
 
 ## View the results
 
 You can directly view the vignettes here:
 
-* [One Pass Process](https://tanaylab.github.io/metacells-vignettes/htmls/one-pass.html)
-* [Iterative Process](https://tanaylab.github.io/metacells-vignettes/htmls/iterative.html)
-* [Projection Process](https://tanaylab.github.io/metacells-vignettes/htmls/projection.html)
+* [One Pass Process](https://tanaylab.github.io/metacells-vignettes/one-pass.html)
+* [Iterative Process](https://tanaylab.github.io/metacells-vignettes/iterative.html)
+* [Projection Process](https://tanaylab.github.io/metacells-vignettes/projection.html)
 
 ## Re-run the vignettes
 
-If you want to run the vignettes yourself, `git clone` this repository. Then, create a `blobs` sub-directory, download
-the (zipped) [hca\_bm.full.h5ad](https://TODOX/hca_bm.full.h5ad.zip) and
-[blood\_aging.full.h5ad](https://TODOX/blood_aging.full.h5ad.zip) files into it, and unzip them. This will take ~5GB of
-disk space (unzipped).
+You will need the following software to be installed:
 
-Assuming you have the Python [metacells](https://github.com/tanaylab/metacells) package and the R
-[MCView](https://github.com/tanaylab/MCView) package installed, you should be able to run the Jupyter notebooks
-contained here yourself.
+* The Python [metacells](https://github.com/tanaylab/metacells) package, of course.
 
-Alternatively, you could copy these notebooks and adapt them to use your own data, using them as a guide.
+* The Python `seaborn` package for generating graphs. Just `pip install seaborn`.
+
+* An R environment.
+
+* The R [MCView](https://github.com/tanaylab/MCView) package installed in it. See the installation instructions in the
+  package (it is *not* a standard CRAN package).
+
+* And, of course, a Jupyter setup that can access both the Python and R environments.
+
+To get the Jupyter notebook sources, just `git clone` this repository. You can adapt the notebooks to use your own data,
+of course. If you want to reproduce them, you'll need to get the data as well:
+
+* First, `cd` into the cloned repository.
+
+* Then, `wget https://metacells-vignette.s3.eu-west-1.amazonaws.com/blobs.tgz` to get the data files. This will download ~1GB of data.
+
+* Finally, `tar xvzf blobs.tgz` which will extract the data files into the `blobs` directory, requiring ~6GB of disk space.
+
+The data in these files comes from the following sources:
+
+* Human Cell Atlas Bone Marrow Data from
+  [here](https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79?catalog=dcp1).
+
+* Blood aging data from [here](https://elifesciences.org/articles/79363).
 
 License (MIT)
 -------------
