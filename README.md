@@ -1,7 +1,7 @@
 # Metacells Vignettes
 
 These vignettes give examples for using the [metacells](https://github.com/tanaylab/metacells), specifically version
-0.9. They are not meant as a comprehensive documentation of all the features, and the data contained in them should
+0.9.0. They are not meant as a comprehensive documentation of all the features, and the data contained in them should
 **not** be used for any serious analysis. They are just examples of the processes that one typically uses when using the
 metacells package for analysis of scRNA-seq data.
 
