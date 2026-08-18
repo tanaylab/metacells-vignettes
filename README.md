@@ -7,11 +7,18 @@ metacells package for analysis of scRNA-seq data.
 
 ## View the results
 
-You can directly view the vignettes here:
+You can directly view the vignettes here, as a web page or as a PDF. Both contain the same thing, and each is a single
+self-contained file which needs no network access to view:
 
-* [One Pass Process](https://tanaylab.github.io/metacells-vignettes/one-pass.html)
-* [Iterative Process](https://tanaylab.github.io/metacells-vignettes/iterative.html)
-* [Projection Process](https://tanaylab.github.io/metacells-vignettes/projection.html)
+* One Pass Process:
+  [HTML](https://tanaylab.github.io/metacells-vignettes/one-pass.html),
+  [PDF](https://tanaylab.github.io/metacells-vignettes/one-pass.pdf)
+* Iterative Process:
+  [HTML](https://tanaylab.github.io/metacells-vignettes/iterative.html),
+  [PDF](https://tanaylab.github.io/metacells-vignettes/iterative.pdf)
+* Projection Process:
+  [HTML](https://tanaylab.github.io/metacells-vignettes/projection.html),
+  [PDF](https://tanaylab.github.io/metacells-vignettes/projection.pdf)
 
 ## Re-run the vignettes
 
@@ -43,6 +50,24 @@ The data in these files comes from the following sources:
   [here](https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79?catalog=dcp1).
 
 * Blood aging data from [here](https://elifesciences.org/articles/79363).
+
+## Generate the viewable documents
+
+Running `make docs` converts each notebook in `notebooks` into the HTML and the PDF in `docs`. This never re-executes a
+notebook, so it needs neither the data nor R, only:
+
+* The Python `nbconvert` package. Just `pip install nbconvert`.
+
+* The Python `playwright` package and the browser it drives, for generating the PDF. Just `pip install playwright` and
+  then `playwright install chromium`.
+
+On a Linux machine without a desktop environment the browser will also need `at-spi2-atk`, `at-spi2-core`,
+`mesa-libgbm`, `libdrm` and `libwayland-server`, which `playwright install --with-deps chromium` installs given root
+access. Without it, `dnf download` fetches them as a normal user, `rpm2cpio ... | cpio -idm` extracts them anywhere, and
+pointing `LD_LIBRARY_PATH` at that directory is enough.
+
+Run `make` on its own to list all the targets. Use `make ci` to generate the documents and verify that the result is
+staged for commit, which is what keeps them from drifting away from the notebooks.
 
 License (MIT)
 -------------
