@@ -53,23 +53,37 @@ The data in these files comes from the following sources:
 
 ## Generate the viewable documents
 
-Running `make docs` converts each notebook in `notebooks` into the HTML and the PDF in `docs`. This never re-executes a
-notebook, so it needs neither the data nor R, only:
+The documents are generated and published by the CI server on every push, and are not part of this repository. This is
+why they cannot drift away from the notebooks they are generated from.
 
-* The Python `nbconvert` package. Just `pip install nbconvert`.
+To generate them yourself, which is also how to reproduce what the CI server did:
 
-* The Python `playwright` package and the browser it drives, for generating the PDF. Just `pip install playwright` and
-  then `playwright install chromium`.
+```
+python3 -m venv venv
+venv/bin/pip install -r requirements.txt
+venv/bin/playwright install chromium
+PATH=$PWD/venv/bin:$PATH make ci
+```
 
-On a Linux machine without a desktop environment the browser will also need `at-spi2-atk`, `at-spi2-core`,
-`mesa-libgbm`, `libdrm` and `libwayland-server`, which `playwright install --with-deps chromium` installs given root
-access. Without it, `dnf download` fetches them as a normal user, `rpm2cpio ... | cpio -idm` extracts them anywhere, and
-pointing `LD_LIBRARY_PATH` at that directory is enough.
+This never re-executes a notebook, so it needs neither the data nor R. It writes into `docs`, which is ignored by git.
 
-Run `make` on its own to list all the targets. Use `make ci` to generate the documents and verify that the result is
-staged for commit, which is what keeps them from drifting away from the notebooks. This compares the generated documents
-byte for byte, so a different version of `nbconvert` or `playwright` will report a drift which isn't one; the versions
-that the generated documents match are pinned in `.github/workflows/ci.yml`.
+`requirements.txt` pins the whole tool chain rather than just the converters, because that is what makes the result
+reproducible: one version of `pygments` renders a `%%time` cell magic as a single token and the next renders it as two.
+Upgrading means regenerating that file deliberately, in an empty environment and with `PYTHONPATH` unset.
+
+`make ci` generates the documents and then checks them, since nothing compares them against a previous version any
+more. The checks assert that each document is of a plausible size, embeds its images, loads nothing over the network,
+and that each PDF opens with the expected pages, text and figures. They deliberately do not compare exact content, so
+that a new version of the tool chain rendering the same thing differently does not fail them.
+
+On a Linux machine without a desktop environment the browser needs `at-spi2-atk`, `at-spi2-core`, `mesa-libgbm`,
+`libdrm` and `libwayland-server`, which `playwright install --with-deps chromium` installs given root access. Without
+it, `dnf download` fetches them as a normal user, `rpm2cpio ... | cpio -idm` extracts them anywhere, and pointing
+`LD_LIBRARY_PATH` at that directory is enough.
+
+When a CI run fails, the workflow run page shows what went wrong without having to sign in: each problem is reported as
+an annotation, and the run summary lists the generated documents and the exact versions used. The generated documents
+are also attached to the run as an artifact, whether or not it succeeded, so they can be examined directly.
 
 License (MIT)
 -------------

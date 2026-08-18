@@ -2,26 +2,80 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+
+# Allow the workflow to publish the documents to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A run in progress finishes rather than being cancelled, so a deployment is never half done.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   docs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
-      # The versions are pinned because `make ci` compares the generated documents byte by byte
-      # against the committed ones, so a different converter would report a drift that isn't one.
-      # Upgrading either one means regenerating the documents in the same commit.
-      - run: pip install nbconvert==7.16.6 playwright==1.62.0
+      # The whole tool chain is pinned, not just the converters, so that generating the documents
+      # locally produces what this produces. An unpinned dependency is enough to change the result:
+      # one version of `pygments` renders `%%time` as one token and the next renders it as two.
+      - run: pip install -r requirements.txt
 
-      # The browser that generates the PDF needs system libraries which the runner does not have.
+      # The browser which generates the PDFs needs system libraries the runner does not have.
       - run: playwright install --with-deps chromium
 
-      # Generates the documents and verifies they match the notebooks they were generated from.
+      # Everything is done by the `Makefile`, so that running `make ci` locally does exactly what
+      # happens here. Nothing about generating the documents lives in this file.
       - run: make ci
+
+      # The documents are kept whether or not the run succeeded, so that a failure can be examined
+      # by downloading what was actually generated instead of trying to reproduce it.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: documents
+          path: docs
+          retention-days: 30
+
+      # Recorded on the run page, which is readable without being signed in, unlike the log. This is
+      # what to look at first when a run fails.
+      - if: always()
+        run: |
+          echo '## Generated documents' >> $GITHUB_STEP_SUMMARY
+          ls -l docs >> $GITHUB_STEP_SUMMARY 2>&1 || echo 'none were generated' >> $GITHUB_STEP_SUMMARY
+          echo '## Tool chain' >> $GITHUB_STEP_SUMMARY
+          pip freeze >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/configure-pages@v5
+        if: github.event_name == 'push'
+
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name == 'push'
+        with:
+          path: docs
+
+  # Publishing is a job of its own because that is what the deployment environment attaches to. It
+  # runs only for `main`, so a pull request is checked without being published.
+  publish:
+    needs: docs
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

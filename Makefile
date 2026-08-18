@@ -33,16 +33,11 @@ clean: clean-docs  ## remove all generated documents
 clean-docs:
 	rm -f $(HTML_FILES) $(PDF_FILES)
 
-ci: docs staged  ## check everything in a CI server
+ci: docs check  ## generate the documents and check them, as the CI server does
 
-staged:  ## check everything is staged for git commit
-	@if git status . | grep -q 'Changes not staged\|Untracked files'; \
-	then \
-	    git status; \
-	    echo 'There are unstaged changes (run `git add .`).'; \
-	    false; \
-	else true; \
-	fi
+.PHONY: check
+check: $(HTML_FILES) $(PDF_FILES)  ## check the generated documents are usable
+	python3 scripts/check_documents.py
 
 .PHONY: docs
 docs: html pdf  ## generate all the viewable documents
@@ -71,8 +66,8 @@ docs/%.html: notebooks/%.ipynb $(IMAGE_FILES)
 #
 # The chromium stamps the time it generated the PDF into it, which is the only thing that differs
 # between two generations of the same notebook. Replacing it with a fixed date of the same length
-# leaves every byte offset in the file intact, and makes the generated PDF reproducible, so `ci` can
-# verify it is up to date the same way it verifies the HTML.
+# leaves every byte offset in the file intact, and makes the generated PDF reproducible, so that
+# comparing two generations shows whether anything actually changed.
 docs/%.pdf: notebooks/%.ipynb $(IMAGE_FILES)
 	jupyter nbconvert --to webpdf $(NBCONVERT_FLAGS) $<
 	sed -i "s/D:[0-9]\{14\}+00'00'/D:20230101000000+00'00'/g" $@
