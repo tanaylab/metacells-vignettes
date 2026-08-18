@@ -12,6 +12,9 @@ HTML_FILES = $(patsubst notebooks/%.ipynb, docs/%.html, $(NOTEBOOK_FILES))
 
 PDF_FILES = $(patsubst notebooks/%.ipynb, docs/%.pdf, $(NOTEBOOK_FILES))
 
+# The pages of the site which are written by hand rather than generated from a notebook.
+SITE_FILES = $(patsubst site/%, docs/%, $(wildcard site/*))
+
 .DEFAULT_GOAL := help
 
 define PRINT_HELP_PYSCRIPT
@@ -31,16 +34,23 @@ help:
 clean: clean-docs  ## remove all generated documents
 
 clean-docs:
-	rm -f $(HTML_FILES) $(PDF_FILES)
+	rm -f $(HTML_FILES) $(PDF_FILES) $(SITE_FILES)
 
 ci: docs check  ## generate the documents and check them, as the CI server does
 
 .PHONY: check
-check: $(HTML_FILES) $(PDF_FILES)  ## check the generated documents are usable
+check: docs  ## check the generated documents are usable
 	python3 scripts/check_documents.py
 
 .PHONY: docs
-docs: html pdf  ## generate all the viewable documents
+docs: html pdf site  ## generate all the viewable documents
+
+.PHONY: site
+site: $(SITE_FILES)  ## copy the hand written pages of the site
+
+docs/%: site/%
+	@mkdir -p docs
+	cp $< $@
 
 .PHONY: html
 html: $(HTML_FILES)  ## generate the viewable HTML documents

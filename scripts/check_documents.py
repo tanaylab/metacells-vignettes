@@ -92,6 +92,10 @@ def main() -> int:
         return 1
 
     problems: List[str] = []
+    for page in sorted(Path("site").glob("*")):
+        if not (DOCS / page.name).exists():
+            problems.append(f"{DOCS / page.name}: the hand written page was not copied into the site")
+
     for notebook in notebooks:
         for suffix, check in ((".html", check_html), (".pdf", check_pdf)):
             path = DOCS / (notebook.stem + suffix)
