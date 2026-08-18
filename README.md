@@ -67,7 +67,9 @@ access. Without it, `dnf download` fetches them as a normal user, `rpm2cpio ... 
 pointing `LD_LIBRARY_PATH` at that directory is enough.
 
 Run `make` on its own to list all the targets. Use `make ci` to generate the documents and verify that the result is
-staged for commit, which is what keeps them from drifting away from the notebooks.
+staged for commit, which is what keeps them from drifting away from the notebooks. This compares the generated documents
+byte for byte, so a different version of `nbconvert` or `playwright` will report a drift which isn't one; the versions
+that the generated documents match are pinned in `.github/workflows/ci.yml`.
 
 License (MIT)
 -------------
